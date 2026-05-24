@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ReliefBridge Study 2 — Mockup v6</title>
+<style>
+:root {
+  --navy-950:#071326; --navy-900:#0b1d3a; --navy-850:#10294d; --blue-700:#0f58c9; --blue-600:#1767e8;
+  --slate-900:#111827; --slate-700:#334155; --slate-600:#475569; --slate-300:#cbd5e1; --slate-100:#f1f5f9;
+  --green:#16713c; --green-soft:#dcfce7; --purple:#5b3bbd; --purple-soft:#ede9f7;
+  --gpt-teal:#10a37f;
+  --card:0 8px 24px rgba(15,23,42,.08);
+  --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 18% 0%,rgba(59,130,246,.19),transparent 34%),linear-gradient(135deg,#dce7f7,#edf3fb 46%,#f7f9fc);font-family:var(--font);color:var(--slate-900);padding:18px}
+
+.priorstrip{max-width:1480px;margin:0 auto 12px;background:linear-gradient(135deg,#ede9f7,#f4f0ff);border:1px solid #c4b5fd;border-radius:14px;padding:11px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-size:13px;color:#1e1b4b}
+.priorstrip .icon{color:var(--purple);display:flex;align-items:center}
+.priorstrip strong{color:var(--purple);font-weight:700}
+.priorstrip .chips{display:flex;gap:6px;flex-wrap:wrap}
+.priorstrip .chip{background:#fff;color:var(--purple);border:1px solid #c4b5fd;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:600}
+.priorstrip .note{color:#6b7280;font-style:italic;font-size:12px;margin-left:auto}
+
+.armtoggle{max-width:1480px;margin:0 auto 12px;background:#0b1220;color:#e5e7eb;padding:10px 16px;border-radius:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:12px}
+.armtoggle .lbl{color:#93c5fd;letter-spacing:1.5px;font-weight:700;font-size:11px}
+.armtoggle .group{display:flex;gap:4px;background:rgba(255,255,255,.08);padding:3px;border-radius:7px}
+.armtoggle button{padding:6px 12px;background:transparent;color:#e5e7eb;border:0;border-radius:5px;cursor:pointer;font:inherit;font-size:12px}
+.armtoggle button.active{background:var(--blue-600);font-weight:600}
+.armtoggle button:hover:not(.active){background:rgba(255,255,255,.12)}
+
+.browser{max-width:1480px;margin:0 auto;border-radius:28px;overflow:hidden;background:rgba(255,255,255,.86);box-shadow:0 28px 80px rgba(7,19,38,.22);border:1px solid rgba(255,255,255,.75);backdrop-filter:blur(18px)}
+.browserbar{height:44px;background:linear-gradient(180deg,#111827,#0b1220);display:grid;grid-template-columns:94px 1fr 92px;align-items:center;padding:0 14px;color:#e5e7eb}
+.dots{display:flex;gap:8px}.dots span{width:12px;height:12px;border-radius:50%;display:block}.dots span:nth-child(1){background:#ff5f57}.dots span:nth-child(2){background:#ffbd2e}.dots span:nth-child(3){background:#28c840}
+.address{justify-self:center;width:min(620px,100%);height:28px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#dbeafe}
+
+.header{min-height:78px;background:linear-gradient(135deg,var(--navy-950),var(--navy-850) 58%,#0d3f7c);color:white;display:flex;align-items:center;gap:18px;padding:18px 26px;border-bottom:1px solid rgba(255,255,255,.12)}
+.logo{width:44px;height:44px;border:2px solid rgba(255,255,255,.82);border-radius:50%;display:grid;place-items:center;font-weight:850;background:rgba(255,255,255,.08)}.brand{font-size:26px;font-weight:850;letter-spacing:-.035em;line-height:1}.subtitle{color:#bfdbfe;font-size:14px;margin-top:7px}
+.budget{margin-left:auto;display:flex;align-items:center;gap:16px;padding:12px 18px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.25);white-space:nowrap;font-size:15px}.budget b{color:white}.divider{width:1px;height:22px;background:rgba(255,255,255,.28)}
+
+.workspace{display:grid;grid-template-columns:minmax(760px,1.8fr) minmax(380px,.78fr);min-height:870px}
+.donation{padding:16px;background:linear-gradient(180deg,rgba(248,250,252,.74),rgba(255,255,255,.96));border-right:1px solid rgba(203,213,225,.8);position:relative}
+
+/* Top-right floating cart summary */
+.cartcard{background:white;border:1px solid #cbd5e1;border-radius:16px;box-shadow:var(--card);margin-bottom:14px;overflow:hidden}
+.cartcard .head{padding:11px 16px;background:linear-gradient(135deg,#0b1d3a,#0f58c9);color:white;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:700}
+.cartcard .head .cartlbl{flex:1;display:flex;align-items:center;gap:8px}
+.cartcard .head .clear{background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.04em;text-transform:uppercase}
+.cartcard .head .clear:hover{background:rgba(255,255,255,.25)}
+.cartcard .head .clear:disabled{opacity:.4;cursor:not-allowed}
+.cartcard .head .toggle{background:rgba(255,255,255,.15);color:white;border:0;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit}
+.cartcard .body{padding:10px 16px;font-size:12.5px;color:var(--slate-700);display:none}
+.cartcard.expanded .body{display:block}
+.cartcard .row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dotted rgba(100,116,139,.3)}
+.cartcard .row b{color:var(--slate-900);font-weight:700}
+.cartcard .totalrow{display:flex;justify-content:space-between;padding:6px 0 0;margin-top:4px;border-top:1px solid #cbd5e1;font-size:13px}
+.cartcard .totalrow b{color:var(--blue-700);font-weight:800}
+.cartcard .lineitem{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:1px dotted rgba(100,116,139,.2)}
+.cartcard .lineitem .ctrls{display:flex;gap:4px;align-items:center}
+.cartcard .lineitem .ctrls button{width:22px;height:22px;border:1px solid #cbd5e1;background:white;border-radius:5px;cursor:pointer;font:inherit;font-weight:700;display:grid;place-items:center;padding:0;color:var(--slate-700)}
+.cartcard .lineitem .ctrls button:hover{background:#f1f5f9}
+.cartcard .lineitem .ctrls .n{min-width:18px;text-align:center;font-weight:700;color:var(--slate-900)}
+
+.panel{background:rgba(255,255,255,.9);border:1px solid rgba(203,213,225,.86);border-radius:18px;box-shadow:var(--card);margin-bottom:14px;overflow:hidden}
+.title{display:flex;align-items:center;gap:10px;padding:13px 16px 9px;font-size:13px;font-weight:850;letter-spacing:.055em;text-transform:uppercase}
+.title:before{content:"";width:5px;height:20px;border-radius:99px;background:var(--accent)}
+.cash{--accent:var(--green)}.bundles{--accent:var(--purple)}.items{--accent:var(--blue-600)}
+.hint{margin-left:auto;color:#64748b;font-size:12px;letter-spacing:0;text-transform:none;font-weight:550}
+
+.vouchers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:2px 16px 16px}
+.voucher,.bundle,.item{border:1px solid rgba(148,163,184,.45);background:linear-gradient(180deg,#fff,#fbfdff);border-radius:14px;position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s,border-color .18s}
+.voucher:hover,.bundle:hover,.item:hover{transform:translateY(-2px);box-shadow:0 18px 34px rgba(15,23,42,.13)}
+
+.voucher{min-height:130px;padding:14px 10px 10px;text-align:center}
+.voucher .vicon{color:var(--green);display:flex;justify-content:center;margin-bottom:4px}
+.voucher .amt{color:var(--green);font-size:clamp(22px,2.1vw,28px);font-weight:900;letter-spacing:-.06em;line-height:1}
+.voucher .type{margin-top:5px;font-size:10px;font-weight:850;letter-spacing:.055em;color:var(--slate-700)}
+.voucher .target{color:var(--slate-600);margin-top:4px;font-size:10px;line-height:1.22;min-height:24px}
+
+.bundlegrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:2px 16px 16px}
+.bundle{min-height:158px;display:grid;grid-template-columns:38% 1fr;gap:10px;padding:10px;align-items:center}
+.photo{height:116px;border-radius:12px;overflow:hidden;background:#fff;border:1px solid rgba(226,232,240,.95)}
+img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+.photo svg,.itemphoto svg{width:100%;height:100%;display:block;background:#fff}
+.bundle h3{margin:0;font-size:14px;line-height:1.15;letter-spacing:-.02em}
+.bundle .price{color:var(--purple);font-size:18px;font-weight:900;margin:5px 0 3px}
+.bundle p{margin:0;color:var(--slate-600);font-size:11.5px;line-height:1.3}
+
+.itemgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;padding:2px 16px 16px}
+.item{min-height:200px;display:flex;flex-direction:column}
+.itemphoto{height:96px;background:white;overflow:hidden;border-bottom:1px solid rgba(226,232,240,.9)}
+.info{padding:8px 10px 6px;flex:1;display:flex;flex-direction:column}
+.name{font-size:12.5px;font-weight:700;line-height:1.15;min-height:28px}
+.price{color:var(--blue-700);font-size:15px;font-weight:900;margin-top:2px}
+
+/* +/- controls under each card */
+.ctrls{display:flex;align-items:center;justify-content:center;gap:0;margin:6px 8px 8px;border:1px solid #cbd5e1;border-radius:9px;overflow:hidden;background:white}
+.ctrls button{flex:1;border:0;background:white;color:var(--slate-700);font:inherit;font-weight:700;font-size:14px;cursor:pointer;padding:5px 0;transition:background .12s}
+.ctrls button:hover:not(:disabled){background:#f1f5f9;color:var(--blue-700)}
+.ctrls button:disabled{color:#cbd5e1;cursor:not-allowed}
+.ctrls .qty{flex:1;text-align:center;font-weight:800;color:var(--slate-900);font-size:13px;padding:5px 0;border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0}
+.voucher .ctrls{border-color:#16713c}
+.voucher .ctrls button:hover:not(:disabled){background:var(--green-soft);color:var(--green)}
+.bundle .ctrls{border-color:#5b3bbd;margin:6px 0 0}
+.bundle .ctrls button:hover:not(:disabled){background:var(--purple-soft);color:var(--purple)}
+.item .ctrls{border-color:#0f58c9}
+
+
+.retailer-logo{background:rgba(251,146,60,.14);border-color:rgba(251,146,60,.5);color:#fdba74;text-transform:lowercase}
+.retailer-brand{color:#fed7aa;text-transform:lowercase;letter-spacing:-.02em}
+.charityhero{background:linear-gradient(135deg,#eef4ff,#ffffff 60%);border:1px solid #dbeafe;border-radius:18px;box-shadow:var(--card);padding:14px 18px 16px;margin-bottom:14px}
+.charityhero .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 10px;border-radius:999px;background:#eff6ff;border:1px solid #bfdbfe;color:#0f58c9;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.charityhero .charityname{font-size:28px;font-weight:900;letter-spacing:-.04em;color:#0b1d3a;margin-top:8px}
+.charityhero .charitycopy{color:#475569;font-size:13px;margin-top:5px}
+.cartcard .head{flex-wrap:wrap}
+.cartcard .head .cartlbl{min-width:250px}
+.cartcard .head .checkout{background:#10a37f;color:white;border:1px solid rgba(255,255,255,.18);padding:5px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.04em;text-transform:uppercase}
+.cartcard .head .checkout:hover{background:#0d8c6c}
+.cartcard .head .checkout:disabled{opacity:.45;cursor:not-allowed}
+.brandtag{display:inline-block;margin-bottom:5px;padding:3px 8px;border-radius:999px;background:#eff6ff;border:1px solid #bfdbfe;color:#0f58c9;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.item .name{min-height:26px}
+
+.incart{border-color:rgba(23,103,232,.78);box-shadow:0 0 0 3px rgba(23,103,232,.11),0 16px 34px rgba(15,23,42,.1)}
+.voucher.incart{border-color:rgba(22,113,60,.78);box-shadow:0 0 0 3px rgba(22,113,60,.13),0 16px 34px rgba(15,23,42,.1)}
+.bundle.incart{border-color:rgba(91,59,189,.78);box-shadow:0 0 0 3px rgba(91,59,189,.13),0 16px 34px rgba(15,23,42,.1)}
+
+.bottom{display:grid;grid-template-columns:minmax(170px,.55fr) minmax(220px,1fr);gap:12px}
+.keep,.final{border-radius:18px;background:rgba(255,255,255,.92);border:1px solid rgba(203,213,225,.86);box-shadow:var(--card);min-height:130px}
+.keep{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px}
+.keep .klabel{color:var(--blue-700);font-weight:900;font-size:12px;letter-spacing:.06em}
+.keep .kvalue{margin-top:8px;color:var(--blue-700);font-size:38px;font-weight:950;letter-spacing:-.08em}
+.keep .khelp{color:#94a3b8;font-size:11px;margin-top:6px;font-style:italic}
+.final{overflow:hidden}
+.final button{width:100%;height:100%;min-height:130px;border:0;color:white;background:linear-gradient(135deg,#0f58c9,#004ce4 55%,#00359d);cursor:pointer;font:inherit;font-size:19px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:14px}
+.final button:disabled{background:#cbd5e1;color:#94a3b8;cursor:not-allowed}
+.final button span:last-child{font-size:28px}
+
+/* Chat pane — 10% narrower than v3 (was 1fr 0.98fr, now 1fr 0.88fr) */
+.chatpane{background:radial-gradient(circle at 12% 4%,rgba(59,130,246,.28),transparent 30%),linear-gradient(180deg,var(--navy-950),#071936 42%,#09234a);color:#eaf2ff;padding:14px;display:flex;flex-direction:column;min-width:0;position:relative}
+.chatshell{height:100%;border-radius:22px;border:1px solid rgba(191,219,254,.28);background:rgba(5,18,40,.58);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 24px 58px rgba(0,0,0,.22);overflow:hidden;display:flex;flex-direction:column}
+
+.chattop{padding:14px 16px 12px;border-bottom:1px solid rgba(191,219,254,.18);display:flex;align-items:center;gap:11px}
+.gpticon{width:34px;height:34px;border-radius:50%;background:white;display:grid;place-items:center;color:var(--gpt-teal);flex:0 0 auto;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.gpticon svg{width:22px;height:22px}
+.ctitle{font-weight:800;font-size:15px;display:flex;align-items:center;gap:6px}
+.cstatus{color:#93c5fd;margin-top:2px;font-size:11px;display:flex;align-items:center;gap:5px}
+.cstatus .ondot{width:6px;height:6px;border-radius:50%;background:#10a37f;box-shadow:0 0 6px #10a37f}
+.spacer{flex:1}
+.skipbtn{background:transparent;color:#93c5fd;border:1px solid rgba(147,197,253,.4);padding:5px 10px;border-radius:7px;font:inherit;font-size:11px;cursor:pointer;font-weight:600}
+.skipbtn:hover{background:rgba(147,197,253,.12)}
+
+.attr{margin:12px 14px 0;padding:11px 13px;border-radius:12px;background:rgba(219,234,254,.11);border:1px solid rgba(191,219,254,.22);color:#dbeafe;display:flex;gap:9px;align-items:flex-start;font-size:11.5px;line-height:1.45}
+.attr .i{width:20px;height:20px;flex:0 0 auto;border-radius:50%;border:1px solid rgba(255,255,255,.65);display:grid;place-items:center;font-weight:900;color:white;font-size:11px}
+
+.messages{flex:1;overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:13px;scroll-behavior:smooth;min-height:200px}
+.messages::-webkit-scrollbar{width:7px}.messages::-webkit-scrollbar-thumb{background:rgba(191,219,254,.22);border-radius:99px}
+
+.row{display:flex;gap:9px;align-items:flex-end;animation:rise .28s ease both}
+.row.user{justify-content:flex-end}
+.avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-weight:900;font-size:11px;border:1px solid rgba(255,255,255,.35);background:white;color:var(--gpt-teal)}
+.avatar.user{background:rgba(59,130,246,.3);color:white;border-color:rgba(255,255,255,.45)}
+.avatar svg{width:18px;height:18px}
+
+.bubble{max-width:min(380px,86%);padding:11px 13px;border-radius:14px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;position:relative}
+.assistant .bubble{background:rgba(219,234,254,.14);border:1px solid rgba(191,219,254,.16);color:#eff6ff;border-bottom-left-radius:6px}
+.user .bubble{background:linear-gradient(135deg,var(--blue-700),#0b4eb4);color:white;border-bottom-right-radius:6px;box-shadow:0 12px 26px rgba(15,88,201,.2)}
+.time{display:block;text-align:right;color:rgba(219,234,254,.74);font-size:9.5px;margin-top:6px}
+
+.typing{display:inline-flex;align-items:center;gap:5px;min-height:20px}
+.typing span{width:7px;height:7px;border-radius:99px;background:#bfdbfe;opacity:.35;animation:dot 1.4s infinite ease-in-out}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+
+.actions{padding:10px 16px 12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.chip{border:1px solid rgba(191,219,254,.38);background:rgba(255,255,255,.04);color:#eaf2ff;min-height:38px;border-radius:99px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.18s;padding:0 10px}
+.chip:hover{background:rgba(59,130,246,.22);border-color:rgba(219,234,254,.7);transform:translateY(-1px)}
+.chip:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+.inputarea{padding:12px 16px 14px;border-top:1px solid rgba(191,219,254,.18);display:grid;grid-template-columns:1fr 46px;gap:8px}
+.chatinput{min-height:46px;border-radius:14px;border:1px solid rgba(191,219,254,.3);background:rgba(255,255,255,.96);color:#0f172a;padding:0 14px;font:inherit;font-size:13px;outline:0}
+.chatinput:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.18)}
+.chatinput:disabled{background:rgba(255,255,255,.5);cursor:not-allowed}
+.send{width:46px;height:46px;border:0;border-radius:14px;color:white;background:linear-gradient(135deg,#10a37f,#0d8c6c);font-size:20px;cursor:pointer;font-family:inherit}
+.send:disabled{background:#475569;cursor:not-allowed;opacity:.5}
+
+.turncounter{text-align:center;color:#93c5fd;font-size:10.5px;padding:4px 0 6px;letter-spacing:.04em}
+.turncounter.warning{color:#fbbf24}
+.turncounter.exhausted{color:#f87171;font-weight:700}
+
+/* Collapsed chat */
+.chatpane.collapsed{display:none}
+.reopenbtn{display:none;position:absolute;top:50%;right:12px;transform:translateY(-50%);background:linear-gradient(135deg,#10a37f,#0d8c6c);color:white;border:0;padding:14px 8px;border-radius:10px 0 0 10px;cursor:pointer;font:inherit;font-size:11px;font-weight:700;writing-mode:vertical-rl;text-orientation:mixed;z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+body.chat-collapsed .reopenbtn{display:block}
+body.chat-collapsed .workspace{grid-template-columns:1fr}
+body.chat-collapsed .chatpane{display:none}
+
+/* Toast */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(18px);background:#071326;color:white;padding:14px 18px;border-radius:999px;box-shadow:0 20px 48px rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:.24s;font-size:14px;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Arms */
+.generic .attr{display:none}
+.noai .workspace{grid-template-columns:1fr}
+.noai .chatpane{display:none}
+.noai .reopenbtn{display:none!important}
+
+@keyframes dot{0%,80%,100%{opacity:.35;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes flash{0%,100%{box-shadow:none}50%{box-shadow:0 0 0 4px rgba(220,38,38,.18)}}
+
+/* Mobile: chat becomes collapsible drawer */
+@media(max-width:1180px){
+  .workspace{grid-template-columns:1fr}
+  .donation{border-right:0}
+  .chatpane{display:none}
+  .chatpane.mobile-open{display:flex;position:fixed;inset:0;z-index:100;padding:12px}
+  .chatpane.mobile-open .chatshell{height:100%}
+  .mobilechatfab{display:flex;position:fixed;bottom:18px;right:18px;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#10a37f,#0d8c6c);color:white;border:0;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:90;font-family:inherit}
+  body.noai .mobilechatfab{display:none}
+  .mobile-close{display:flex;position:absolute;top:18px;right:18px;background:rgba(255,255,255,.2);border:0;color:white;width:32px;height:32px;border-radius:50%;align-items:center;justify-content:center;font-size:18px;cursor:pointer;z-index:101;font-family:inherit}
+}
+@media(min-width:1181px){
+  .mobilechatfab,.mobile-close{display:none}
+}
+@media(max-width:780px){
+  body{padding:8px}
+  .browser{border-radius:18px}
+  .browserbar{grid-template-columns:70px 1fr 30px}
+  .header{align-items:flex-start;flex-direction:column;gap:12px}
+  .budget{margin-left:0;width:100%;justify-content:space-between}
+  .vouchers,.itemgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .bundlegrid,.bottom{grid-template-columns:1fr}
+  .bundle{grid-template-columns:130px 1fr}
+  .actions{grid-template-columns:1fr}
+  .priorstrip{font-size:12px;padding:8px 12px}
+  .priorstrip .note{display:none}
+}
+</style>
+</head>
+<body class="tca">
+
+<div class="priorstrip">
+  <span class="icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+  </span>
+  <strong>Pre-task captured</strong>
+  <span>· you said priority items were —</span>
+  <span class="chips">
+    <span class="chip">Sleeping bag</span>
+    <span class="chip">Hygiene kit</span>
+    <span class="chip">Bottled water</span>
+    <span class="chip">RTE food</span>
+    <span class="chip">Toys</span>
+  </span>
+  <span class="note">shift from prior to final = AI's effect on belief (H2)</span>
+</div>
+
+<div class="armtoggle">
+  <span class="lbl">DEMO CONTROLS</span>
+  <div class="group">
+    <button data-arm="noai">Arm 1 — No AI</button>
+    <button data-arm="generic">Arm 2 — Generic AI</button>
+    <button data-arm="tca" class="active">Arm 3 — TCA-Synthesizer</button>
+  </div>
+  <button class="reset" id="resetBtn" style="margin-left:auto;background:rgba(255,255,255,.1);color:#e5e7eb;border:1px solid rgba(255,255,255,.25);padding:6px 14px;border-radius:5px;font:inherit;font-size:11px;cursor:pointer">↻ Reset</button>
+</div>
+
+<div class="browser">
+  <div class="browserbar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="address">🔒 hepsiburada.com/earthquake-relief-checkout</div>
+    <div></div>
+  </div>
+  <header class="header">
+    <div class="logo retailer-logo">hb</div>
+    <div>
+      <div class="brand retailer-brand">hepsiburada</div>
+      <div class="subtitle">Earthquake relief marketplace · Mountainous region</div>
+    </div>
+    <div class="budget">
+      <span>Budget: <b>$80</b></span>
+      <span class="divider"></span>
+      <span>Allocated: <b id="allocatedTop">$0</b></span>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="donation">
+
+      <div class="charityhero">
+        <div class="eyebrow">Verified relief organization</div>
+        <div class="charityname">ReliefBridge</div>
+        <div class="charitycopy">Choose cash, curated bundles, or individual items to support this organization.</div>
+      </div>
+
+      <div class="cartcard" id="cartCard">
+        <div class="head">
+          <div class="cartlbl">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span><b id="cartTotal">$0</b> allocated · <b id="cartRemainingHead">$80</b> unallocated · <span id="cartCount">0</span> items</span>
+          </div>
+          <button class="checkout" id="topCheckoutBtn" disabled>Complete order</button>
+          <button class="clear" id="clearBtn" disabled>Clear all</button>
+          <button class="toggle" id="cartToggle" title="Show details">▾</button>
+        </div>
+        <div class="body" id="cartBody">
+          <div class="row"><span>Unrestricted cash</span><b id="unrTot">$0</b></div>
+          <div class="row"><span>Earmarked cash</span><b id="earTot">$0</b></div>
+          <div class="row"><span>Curated bundles</span><b id="bunTot">$0</b></div>
+          <div class="row"><span>Individual items</span><b id="itmTot">$0</b></div>
+          <div id="cartLines"></div>
+          <div class="totalrow"><span>Total allocated</span><b id="cartTotal2">$0 / $80</b></div>
+        </div>
+      </div>
+
+      <div class="panel cash">
+        <div class="title">Cash vouchers <span class="hint">platform allocates funds where needed most</span></div>
+        <div class="vouchers" id="voucherGrid"></div>
+      </div>
+
+      <div class="panel bundles">
+        <div class="title">Curated bundles <span class="hint">pre-assembled packs</span></div>
+        <div class="bundlegrid" id="bundleGrid"></div>
+      </div>
+
+      <div class="panel items">
+        <div class="title">Individual items <span class="hint">mixed order, no priority labels</span></div>
+        <div class="itemgrid" id="itemGrid"></div>
+      </div>
+
+      <div class="bottom">
+        <div class="keep">
+          <div class="klabel">KEEP</div>
+          <div class="kvalue" id="keepValue">$80</div>
+          <div class="khelp">Any unallocated budget stays with you</div>
+        </div>
+        <div class="final">
+          <button id="finalize" disabled>
+            <span id="finalLabel">Allocate all $80 first</span>
+            <span>›</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="chatpane" id="chatPane">
+      <div class="chatshell">
+        <div class="chattop">
+          <div class="gpticon">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v3l-2.597 1.5-2.607-1.5z"/></svg>
+          </div>
+          <div>
+            <div class="ctitle">ChatGPT <span style="color:#93c5fd;font-weight:500;font-size:11px;">— donation assistant</span></div>
+            <div class="cstatus"><span class="ondot"></span> GPT-4o semantic mapping · controlled answers</div>
+          </div>
+          <div class="spacer"></div>
+          <button class="skipbtn" id="skipBtn">Skip ✕</button>
+        </div>
+        <div class="attr" id="attrPanel">
+          <div class="i">i</div>
+          <div>Information synthesized from <b>IFRC, national Red Cross / Red Crescent, local emergency responders, regional health authorities, and fire & rescue</b> in your region.</div>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="actions" id="chipActions">
+          <button class="chip" data-q="What is most needed right now?">What is most needed?</button>
+          <button class="chip" data-q="How long do different donation types take to reach people?">Delivery times</button>
+          <button class="chip" data-q="Where does the money go?">Where money goes</button>
+          <button class="chip" data-q="Why donate cash instead of buying the items myself?">Cash vs items</button>
+        </div>
+        <div class="turncounter" id="turnCounter">Engage with assistant — your choice · 0 of 6 questions used</div>
+        <div class="inputarea">
+          <input id="chatInput" class="chatinput" maxlength="180" placeholder="Type a question, or pick a topic above…" />
+          <button id="send" class="send" aria-label="Send">↗</button>
+        </div>
+      </div>
+    </aside>
+
+    <button class="reopenbtn" id="reopenBtn">Reopen chat</button>
+    <button class="mobilechatfab" id="mobileFab" aria-label="Open chat">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073z"/></svg>
+    </button>
+    <button class="mobile-close" id="mobileClose" aria-label="Close chat">×</button>
+
+  </main>
+</div>
+
+<div class="toast" id="toast">Decision recorded.</div>
+
+<script>
+// ===== Item catalogue =====
+const images = {"blanket": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"10\" stdDeviation=\"7\" flood-opacity=\".24\"/></filter></defs><g filter=\"url(#s)\" transform=\"translate(58 52)\"><path d=\"M24 94 L258 34 L336 58 L101 132 Z\" fill=\"#eef2f7\" stroke=\"#94a3b8\" stroke-width=\"3\"/><path d=\"M101 132 L336 58 L336 100 L101 172 Z\" fill=\"#cbd5e1\" stroke=\"#94a3b8\" stroke-width=\"3\"/><path d=\"M24 94 L101 132 L101 172 L24 134 Z\" fill=\"#f8fafc\" stroke=\"#94a3b8\" stroke-width=\"3\"/><path d=\"M58 85 L130 118 M100 75 L172 108 M142 65 L214 98 M184 55 L256 88 M226 45 L298 78\" stroke=\"white\" stroke-width=\"5\" opacity=\".75\"/></g></svg>", "clothes": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"9\" stdDeviation=\"7\" flood-opacity=\".25\"/></filter></defs><g filter=\"url(#s)\" transform=\"translate(68 52)\"><rect x=\"26\" y=\"98\" width=\"274\" height=\"35\" rx=\"9\" fill=\"#6b7280\"/><rect x=\"13\" y=\"75\" width=\"300\" height=\"35\" rx=\"9\" fill=\"#1e3a8a\"/><rect x=\"34\" y=\"52\" width=\"262\" height=\"35\" rx=\"9\" fill=\"#991b1b\"/><rect x=\"10\" y=\"29\" width=\"295\" height=\"35\" rx=\"9\" fill=\"#888888\"/><path d=\"M30 45 C101 70 196 12 298 43\" fill=\"none\" stroke=\"#e5e7eb\" stroke-width=\"5\" opacity=\".45\"/></g></svg>", "sleeping": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><linearGradient id=\"bag\" x1=\"0\" x2=\"1\"><stop stop-color=\"#0b3b91\"/><stop offset=\".55\" stop-color=\"#2563eb\"/><stop offset=\"1\" stop-color=\"#0b3b91\"/></linearGradient><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"12\" stdDeviation=\"9\" flood-opacity=\".28\"/></filter></defs><g filter=\"url(#s)\" transform=\"translate(61 44) rotate(-9 150 85)\"><ellipse cx=\"82\" cy=\"94\" rx=\"62\" ry=\"54\" fill=\"#08214a\"/><ellipse cx=\"90\" cy=\"92\" rx=\"45\" ry=\"39\" fill=\"#cbd5e1\"/><rect x=\"84\" y=\"36\" width=\"242\" height=\"112\" rx=\"56\" fill=\"url(#bag)\"/><path d=\"M126 44 V142 M174 40 V145 M224 38 V144 M273 45 V135\" stroke=\"#93c5fd\" stroke-width=\"5\" opacity=\".55\"/></g></svg>", "toys": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"8\" stdDeviation=\"6\" flood-opacity=\".22\"/></filter></defs><g filter=\"url(#s)\"><circle cx=\"132\" cy=\"104\" r=\"43\" fill=\"#c58a4b\"/><circle cx=\"96\" cy=\"72\" r=\"19\" fill=\"#c58a4b\"/><circle cx=\"166\" cy=\"72\" r=\"19\" fill=\"#c58a4b\"/><circle cx=\"118\" cy=\"99\" r=\"5\" fill=\"#0f172a\"/><circle cx=\"146\" cy=\"99\" r=\"5\" fill=\"#0f172a\"/><ellipse cx=\"132\" cy=\"119\" rx=\"12\" ry=\"9\" fill=\"#f9e0b0\"/><rect x=\"230\" y=\"108\" width=\"95\" height=\"45\" rx=\"8\" fill=\"#ef4444\"/><rect x=\"255\" y=\"75\" width=\"48\" height=\"42\" rx=\"7\" fill=\"#fbbf24\"/><circle cx=\"250\" cy=\"160\" r=\"16\" fill=\"#0f172a\"/><circle cx=\"309\" cy=\"160\" r=\"16\" fill=\"#0f172a\"/><rect x=\"205\" y=\"135\" width=\"46\" height=\"20\" fill=\"#22c55e\"/><rect x=\"315\" y=\"128\" width=\"36\" height=\"28\" fill=\"#3b82f6\"/></g></svg>", "water": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"7\" stdDeviation=\"5\" flood-opacity=\".2\"/></filter></defs><g filter=\"url(#s)\" transform=\"translate(55 45)\"><g fill=\"#e0f2fe\" stroke=\"#60a5fa\" stroke-width=\"2\"><rect x=\"0\" y=\"30\" width=\"38\" height=\"110\" rx=\"13\"/><rect x=\"42\" y=\"20\" width=\"38\" height=\"120\" rx=\"13\"/><rect x=\"84\" y=\"25\" width=\"38\" height=\"115\" rx=\"13\"/><rect x=\"126\" y=\"18\" width=\"38\" height=\"122\" rx=\"13\"/><rect x=\"168\" y=\"28\" width=\"38\" height=\"112\" rx=\"13\"/><rect x=\"210\" y=\"20\" width=\"38\" height=\"120\" rx=\"13\"/><rect x=\"252\" y=\"30\" width=\"38\" height=\"110\" rx=\"13\"/></g><g fill=\"#2563eb\"><rect x=\"4\" y=\"78\" width=\"30\" height=\"22\" rx=\"4\"/><rect x=\"46\" y=\"72\" width=\"30\" height=\"22\" rx=\"4\"/><rect x=\"88\" y=\"76\" width=\"30\" height=\"22\" rx=\"4\"/><rect x=\"130\" y=\"70\" width=\"30\" height=\"22\" rx=\"4\"/><rect x=\"172\" y=\"78\" width=\"30\" height=\"22\" rx=\"4\"/><rect x=\"214\" y=\"73\" width=\"30\" height=\"22\" rx=\"4\"/><rect x=\"256\" y=\"79\" width=\"30\" height=\"22\" rx=\"4\"/></g></g></svg>", "books": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"8\" stdDeviation=\"6\" flood-opacity=\".22\"/></filter></defs><g filter=\"url(#s)\" transform=\"translate(80 50) rotate(-4 140 80)\"><rect x=\"0\" y=\"110\" width=\"260\" height=\"28\" rx=\"5\" fill=\"#7c2d12\"/><rect x=\"12\" y=\"84\" width=\"250\" height=\"28\" rx=\"5\" fill=\"#1e3a8a\"/><rect x=\"-5\" y=\"58\" width=\"265\" height=\"28\" rx=\"5\" fill=\"#f59e0b\"/><rect x=\"18\" y=\"32\" width=\"240\" height=\"28\" rx=\"5\" fill=\"#334155\"/><path d=\"M20 116 H245 M30 90 H250 M15 64 H245 M34 38 H238\" stroke=\"white\" stroke-width=\"4\" opacity=\".55\"/></g></svg>", "food": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"8\" stdDeviation=\"6\" flood-opacity=\".22\"/></filter></defs><g filter=\"url(#s)\"><rect x=\"68\" y=\"70\" width=\"76\" height=\"118\" rx=\"8\" fill=\"#dc2626\"/><rect x=\"158\" y=\"62\" width=\"82\" height=\"125\" rx=\"8\" fill=\"#166534\"/><rect x=\"252\" y=\"76\" width=\"76\" height=\"112\" rx=\"8\" fill=\"#8b5e34\"/><rect x=\"78\" y=\"90\" width=\"56\" height=\"44\" rx=\"5\" fill=\"#fde68a\"/><rect x=\"168\" y=\"84\" width=\"62\" height=\"44\" rx=\"5\" fill=\"#bbf7d0\"/><rect x=\"262\" y=\"98\" width=\"56\" height=\"38\" rx=\"5\" fill=\"#fed7aa\"/><ellipse cx=\"210\" cy=\"196\" rx=\"82\" ry=\"22\" fill=\"#e5e7eb\"/><ellipse cx=\"210\" cy=\"190\" rx=\"70\" ry=\"30\" fill=\"#fef3c7\"/><ellipse cx=\"210\" cy=\"186\" rx=\"52\" ry=\"17\" fill=\"#f97316\" opacity=\".6\"/></g></svg>", "cosmetics": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"8\" stdDeviation=\"6\" flood-opacity=\".22\"/></filter></defs><g filter=\"url(#s)\" transform=\"translate(70 55)\"><rect x=\"8\" y=\"70\" width=\"28\" height=\"85\" rx=\"6\" fill=\"#111827\"/><rect x=\"56\" y=\"40\" width=\"38\" height=\"115\" rx=\"10\" fill=\"#f8fafc\" stroke=\"#cbd5e1\"/><rect x=\"112\" y=\"18\" width=\"36\" height=\"137\" rx=\"10\" fill=\"#e5e7eb\" stroke=\"#cbd5e1\"/><rect x=\"172\" y=\"72\" width=\"32\" height=\"83\" rx=\"7\" fill=\"#991b1b\"/><rect x=\"220\" y=\"48\" width=\"52\" height=\"107\" rx=\"8\" fill=\"#fee2e2\" stroke=\"#fca5a5\"/><rect x=\"230\" y=\"28\" width=\"32\" height=\"28\" rx=\"6\" fill=\"#fca5a5\"/><rect x=\"116\" y=\"58\" width=\"28\" height=\"44\" fill=\"#3b82f6\" opacity=\".45\"/></g></svg>", "hygiene": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"8\" stdDeviation=\"6\" flood-opacity=\".22\"/></filter></defs><g filter=\"url(#s)\"><rect x=\"82\" y=\"62\" width=\"42\" height=\"125\" rx=\"13\" fill=\"#bae6fd\" stroke=\"#60a5fa\" stroke-width=\"3\"/><rect x=\"89\" y=\"98\" width=\"28\" height=\"42\" rx=\"5\" fill=\"#0ea5e9\"/><rect x=\"144\" y=\"82\" width=\"34\" height=\"105\" rx=\"9\" fill=\"#dbeafe\" stroke=\"#93c5fd\" stroke-width=\"3\"/><rect x=\"205\" y=\"70\" width=\"118\" height=\"92\" rx=\"13\" fill=\"#e0f2fe\" stroke=\"#93c5fd\" stroke-width=\"3\"/><path d=\"M226 105 h76\" stroke=\"#0f58c9\" stroke-width=\"8\"/><rect x=\"196\" y=\"165\" width=\"132\" height=\"30\" rx=\"8\" fill=\"#cbd5e1\"/></g></svg>", "coat": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"9\" stdDeviation=\"7\" flood-opacity=\".25\"/></filter></defs><g filter=\"url(#s)\" transform=\"translate(95 30)\"><path d=\"M78 45 C82 10 148 10 152 45 L210 68 L220 186 L158 190 L150 78 L80 78 L72 190 L10 186 L20 68 Z\" fill=\"#1e3a8a\" stroke=\"#0f172a\" stroke-width=\"4\"/><path d=\"M88 40 C104 18 128 18 144 40\" stroke=\"#c4a36f\" stroke-width=\"14\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M115 72 V190\" stroke=\"#0f172a\" stroke-width=\"5\" opacity=\".42\"/></g></svg>", "baby": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 260\"><rect width=\"420\" height=\"260\" fill=\"#f8fafc\"/><ellipse cx=\"210\" cy=\"220\" rx=\"135\" ry=\"20\" fill=\"#dbe4f0\" opacity=\".55\"/><defs><filter id=\"s\"><feDropShadow dx=\"0\" dy=\"9\" stdDeviation=\"7\" flood-opacity=\".2\"/></filter></defs><g filter=\"url(#s)\"><rect x=\"70\" y=\"80\" width=\"72\" height=\"92\" rx=\"16\" fill=\"#e0f2fe\" stroke=\"#60a5fa\" stroke-width=\"3\"/><rect x=\"92\" y=\"54\" width=\"28\" height=\"34\" rx=\"8\" fill=\"#bfdbfe\"/><rect x=\"168\" y=\"70\" width=\"82\" height=\"108\" rx=\"12\" fill=\"#fef3c7\" stroke=\"#f59e0b\" stroke-width=\"3\"/><circle cx=\"286\" cy=\"122\" r=\"48\" fill=\"#fed7aa\"/><circle cx=\"270\" cy=\"115\" r=\"5\"/><circle cx=\"302\" cy=\"115\" r=\"5\"/><path d=\"M276 139 C285 146 295 146 304 139\" stroke=\"#92400e\" stroke-width=\"4\" fill=\"none\"/></g></svg>"};
+
+const ICONS = {
+  wallet:  '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 1-1 1v3a1 1 0 0 1-1 1H5a2 2 0 0 1-2-2V5"/></svg>',
+  pill:    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>',
+  home:    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  utensils:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>'
+};
+
+const vouchers = [
+  { id:'c10',     amount:10, type:'UNRESTRICTED', cat:'unrestricted', target:'Platform pool',          icon:ICONS.wallet },
+  { id:'c25',     amount:25, type:'UNRESTRICTED', cat:'unrestricted', target:'Platform pool',          icon:ICONS.wallet },
+  { id:'cmed',    amount:20, type:'MEDICAL',      cat:'earmarked',    target:'Medical relief fund',    icon:ICONS.pill },
+  { id:'cshelter',amount:15, type:'SHELTER',      cat:'earmarked',    target:'Shelter operations',     icon:ICONS.home },
+  { id:'cfood',   amount:15, type:'FOOD',         cat:'earmarked',    target:'Food & water',           icon:ICONS.utensils }
+];
+
+const bundles = [
+  { id:'b1', name:'Cold weather essentials', price:35, desc:'Blanket + sleeping bag + warm layer', img:'coat' },
+  { id:'b2', name:'Hygiene & care kit',      price:40, desc:'Hygiene + baby formula + diapers',    img:'baby' },
+  { id:'b3', name:'Comfort & morale pack',   price:25, desc:'Books + small toys + stationery',     img:'toys' }
+];
+
+const itemsRaw = [
+  { id:'i1',  brand:'WarmNest',  name:'Thermal blanket',    price:6,  img:'blanket' },
+  { id:'i6',  brand:'Anatolia Basics', name:'Clothing',     price:5,  img:'clothes' },
+  { id:'i2',  brand:'NorthTrail', name:'Sleeping bag',      price:25, img:'sleeping' },
+  { id:'i7',  brand:'PlayBox',   name:'Toys',               price:8,  img:'toys' },
+  { id:'i3',  brand:'AquaPure',  name:'Bottled water 24-pk',price:8,  img:'water' },
+  { id:'i8',  brand:'BrightPages', name:'Books',            price:10, img:'books' },
+  { id:'i4',  brand:'QuickBite', name:'RTE food',           price:15, img:'food' },
+  { id:'i9',  brand:'CareGlow',  name:'Cosmetics',          price:15, img:'cosmetics' },
+  { id:'i5',  brand:'CleanNest', name:'Hygiene kit',        price:12, img:'hygiene' },
+  { id:'i10', brand:'ArcticWear', name:'Winter coat',       price:10, img:'coat' }
+];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const items = shuffle(itemsRaw.slice());
+
+const BUDGET = 80;
+const TURN_CAP = 6;
+
+const state = {
+  arm: 'tca',
+  cart: {},
+  userTurns: 0,
+  thinking: false,
+};
+
+const $ = id => document.getElementById(id);
+
+function priceOf(id){
+  const v = vouchers.find(x=>x.id===id); if(v) return v.amount;
+  const b = bundles.find(x=>x.id===id);  if(b) return b.price;
+  return items.find(x=>x.id===id).price;
+}
+function nameOf(id){
+  const v = vouchers.find(x=>x.id===id); if(v) return v.type+' $'+v.amount;
+  const b = bundles.find(x=>x.id===id);  if(b) return b.name;
+  return items.find(x=>x.id===id).name;
+}
+function total(){
+  return Object.keys(state.cart).reduce((s,id)=>s+priceOf(id)*state.cart[id],0);
+}
+
+function add(id){
+  if (total() + priceOf(id) > BUDGET){
+    document.querySelector('.budget').style.animation='flash .55s ease';
+    setTimeout(()=>document.querySelector('.budget').style.animation='',600);
+    return;
+  }
+  state.cart[id] = (state.cart[id]||0)+1;
+  render();
+}
+function remove(id){
+  if (!state.cart[id]) return;
+  state.cart[id]--;
+  if (state.cart[id]===0) delete state.cart[id];
+  render();
+}
+function clearCart(){
+  state.cart = {};
+  render();
+}
+
+function update(){
+  let t = { unrestricted:0, earmarked:0, bundles:0, items:0 };
+  Object.keys(state.cart).forEach(id=>{
+    const p = priceOf(id)*state.cart[id];
+    const v = vouchers.find(x=>x.id===id);
+    if (v) t[v.cat]+=p;
+    else if (bundles.find(x=>x.id===id)) t.bundles+=p;
+    else t.items+=p;
+  });
+  const ttl = total();
+  const remaining = BUDGET - ttl;
+  const count = Object.values(state.cart).reduce((a,b)=>a+b,0);
+  $('unrTot').textContent='$'+t.unrestricted;
+  $('earTot').textContent='$'+t.earmarked;
+  $('bunTot').textContent='$'+t.bundles;
+  $('itmTot').textContent='$'+t.items;
+  $('cartTotal').textContent='$'+ttl;
+  $('cartRemainingHead').textContent='$'+remaining;
+  $('cartTotal2').textContent='$'+ttl+' / $80';
+  $('cartCount').textContent=count;
+  $('allocatedTop').textContent='$'+ttl;
+  $('keepValue').textContent='$'+remaining;
+  $('clearBtn').disabled = count===0;
+
+  const lines = Object.keys(state.cart).map(id=>{
+    const qty = state.cart[id];
+    return `<div class="lineitem"><span>${nameOf(id)}</span><span class="ctrls"><button onclick="remove('${id}')">−</button><span class="n">${qty}</span><button onclick="add('${id}')">+</button></span></div>`;
+  }).join('');
+  $('cartLines').innerHTML = lines || '<div style="padding:8px 0;text-align:center;color:#94a3b8;font-style:italic;font-size:11px">Cart is empty — tap items to add</div>';
+
+  const canCheckout = ttl > 0;
+  const label = canCheckout ? `Complete order · Donate $${ttl} · Keep $${remaining}` : 'Select at least one option';
+  const fb = $('finalize');
+  fb.disabled = !canCheckout;
+  $('finalLabel').textContent = label;
+  $('topCheckoutBtn').disabled = !canCheckout;
+  $('topCheckoutBtn').textContent = canCheckout ? 'Complete order' : 'Complete order';
+}
+
+function ctrlsHTML(id){
+  const qty = state.cart[id]||0;
+  return `<div class="ctrls" onclick="event.stopPropagation()">
+    <button onclick="remove('${id}')" ${qty===0?'disabled':''} aria-label="Remove one">−</button>
+    <span class="qty">${qty}</span>
+    <button onclick="add('${id}')" aria-label="Add one">+</button>
+  </div>`;
+}
+
+function render(){
+  $('voucherGrid').innerHTML = vouchers.map(v=>`
+    <div class="voucher ${state.cart[v.id]?'incart':''}">
+      <div class="vicon">${v.icon}</div>
+      <div class="amt">$${v.amount}</div>
+      <div class="type">${v.type}</div>
+      <div class="target">${v.target}</div>
+      ${ctrlsHTML(v.id)}
+    </div>
+  `).join('');
+
+  $('bundleGrid').innerHTML = bundles.map(b=>`
+    <div class="bundle ${state.cart[b.id]?'incart':''}">
+      <div class="photo">${images[b.img]}</div>
+      <div>
+        <h3>${b.name}</h3>
+        <div class="price">$${b.price}</div>
+        <p>${b.desc}</p>
+        ${ctrlsHTML(b.id)}
+      </div>
+    </div>
+  `).join('');
+
+  $('itemGrid').innerHTML = items.map(i=>`
+    <div class="item ${state.cart[i.id]?'incart':''}">
+      <div class="itemphoto">${images[i.img]}</div>
+      <div class="info">
+        <div class="brandtag">${i.brand}</div>
+        <div class="name">${i.name}</div>
+        <div class="price">$${i.price}</div>
+      </div>
+      ${ctrlsHTML(i.id)}
+    </div>
+  `).join('');
+
+  update();
+}
+
+window.add = add;
+window.remove = remove;
+
+// Cart toggle
+$('cartToggle').addEventListener('click', ()=>{
+  $('cartCard').classList.toggle('expanded');
+  $('cartToggle').textContent = $('cartCard').classList.contains('expanded') ? '▴' : '▾';
+});
+$('clearBtn').addEventListener('click', ()=>{
+  if (Object.keys(state.cart).length===0) return;
+  if (confirm('Clear entire cart and start over?')) clearCart();
+});
+
+// ===== Chat =====
+const ANSWERS = {
+  needed: "Local responders currently report shortages in: thermal blankets, sleeping bags, bottled water, ready-to-eat food, and hygiene kits. Baby supplies (formula and diapers) are critically needed. Cold-weather clothing is needed but only specific sizes; mixed clothing donations are already in surplus.",
+  delivery: "Cash and earmarked cash convert to priority items within ~48 hours via partner agencies. Curated bundles ship in 3-5 days. Individual donated items take 4-10 days depending on sorting. Items shipped directly from outside the platform can take 2-3 weeks.",
+  money: "Cash overhead through ReliefBridge averages ~3% (platform fees + transfer costs). Donated items requiring sorting and shipping average 25-40% overhead. Curated bundles average ~12% overhead because the platform pre-negotiates bulk pricing. Audit reports are publicly tracked.",
+  cash: "For the first 48-72 hours post-event, cash is most effective because responders need flexibility. Items shipped specifically can address sustained needs in week 2+. Cash also avoids the sorting overhead that makes some item donations costly. Bottled water already has ~6 days of local buffer.",
+  fallback: "I can help with: what's most needed locally, delivery times, where the money goes, or whether to give cash, bundles, or items. Try a topic suggestion above, or rephrase your question."
+};
+
+function classify(t){
+  t = t.toLowerCase();
+  if (/cash|item|bundle|vs|better|buy|should/.test(t)) return 'cash';
+  if (/need|priority|shortage|most|local|region|surplus/.test(t)) return 'needed';
+  if (/deliver|time|long|reach|fast|hour|day|arrive|ship/.test(t)) return 'delivery';
+  if (/money|where|go|audit|overhead|cost|fee|transparen|trust/.test(t)) return 'money';
+  return 'fallback';
+}
+
+const msgWrap = $('messages');
+const timeStr = () => new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+function esc(s){return s.replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function scroll(){msgWrap.scrollTop = msgWrap.scrollHeight;}
+
+function userMsg(text){
+  msgWrap.insertAdjacentHTML('beforeend',
+    `<div class="row user"><div class="bubble">${esc(text)}<span class="time">${timeStr()}</span></div><div class="avatar user">●</div></div>`);
+  scroll();
+}
+
+function aiThinking(){
+  const row = document.createElement('div');
+  row.className = 'row assistant';
+  row.innerHTML = `<div class="avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073z"/></svg></div><div class="bubble"><span class="typing"><span></span><span></span><span></span></span></div>`;
+  msgWrap.appendChild(row);
+  scroll();
+  return row;
+}
+
+function aiStream(text){
+  state.thinking = true;
+  $('chatInput').disabled = true;
+  $('send').disabled = true;
+  const row = aiThinking();
+  // 4-5 second thinking delay
+  const thinkingMs = 4000 + Math.random()*1000;
+  setTimeout(() => {
+    const bubble = row.querySelector('.bubble');
+    bubble.textContent = '';
+    let i = 0;
+    // Slower stream: ~30 chars/sec → ~5 chars per frame at 60fps
+    function tick(){
+      const step = Math.max(1, Math.round(text.length / 400)); // slower than original (was /120)
+      bubble.textContent += text.slice(i, i+step);
+      i += step;
+      scroll();
+      if (i < text.length){
+        // ~24ms delay between frames (slower than rAF) — using setTimeout
+        setTimeout(tick, 24);
+      } else {
+        const tm = document.createElement('span');
+        tm.className = 'time';
+        tm.textContent = timeStr();
+        bubble.appendChild(tm);
+        state.thinking = false;
+        if (state.userTurns < TURN_CAP){
+          $('chatInput').disabled = false;
+          $('send').disabled = false;
+        }
+      }
+    }
+    tick();
+  }, thinkingMs);
+}
+
+async function routeQuestion(question){
+  const payload = {
+    question,
+    arm: state.arm,
+    cart: state.cart,
+    turnNumber: state.userTurns
+  };
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('API returned ' + res.status);
+    const data = await res.json();
+    console.log('Spreadsheet/GPT mapping:', data);
+    return data.answer || ANSWERS.fallback;
+  } catch (err) {
+    console.warn('API unavailable; falling back to local keyword answer.', err);
+    return ANSWERS[classify(question)] || ANSWERS.fallback;
+  }
+}
+
+async function aiStreamFromApi(question){
+  state.thinking = true;
+  $('chatInput').disabled = true;
+  $('send').disabled = true;
+
+  const row = aiThinking();
+  const startedAt = Date.now();
+
+  const answer = await routeQuestion(question);
+
+  const minThinkingMs = 1200;
+  const wait = Math.max(0, minThinkingMs - (Date.now() - startedAt));
+
+  setTimeout(() => {
+    const bubble = row.querySelector('.bubble');
+    bubble.textContent = '';
+    let i = 0;
+
+    function tick(){
+      const step = Math.max(1, Math.round(answer.length / 400));
+      bubble.textContent += answer.slice(i, i+step);
+      i += step;
+      scroll();
+
+      if (i < answer.length){
+        setTimeout(tick, 24);
+      } else {
+        const tm = document.createElement('span');
+        tm.className = 'time';
+        tm.textContent = timeStr();
+        bubble.appendChild(tm);
+        state.thinking = false;
+        if (state.userTurns < TURN_CAP){
+          $('chatInput').disabled = false;
+          $('send').disabled = false;
+        }
+      }
+    }
+    tick();
+  }, wait);
+}
+
+function sendText(text){
+  text = (text||'').trim();
+  if (!text || state.thinking) return;
+  if (state.userTurns >= TURN_CAP) return;
+  userMsg(text);
+  state.userTurns++;
+  $('chatInput').value = '';
+  updateTurnCounter();
+  aiStreamFromApi(text);
+}
+
+function updateTurnCounter(){
+  const t = $('turnCounter');
+  const remaining = TURN_CAP - state.userTurns;
+  if (state.userTurns === 0){
+    t.textContent = 'Engage with assistant — your choice · 0 of 6 questions used';
+    t.className = 'turncounter';
+  } else if (remaining > 2){
+    t.textContent = `${state.userTurns} of 6 questions used`;
+    t.className = 'turncounter';
+  } else if (remaining > 0){
+    t.textContent = `${state.userTurns} of 6 questions used — ${remaining} remaining`;
+    t.className = 'turncounter warning';
+  } else {
+    t.textContent = `6 of 6 questions used — please finalize your donation`;
+    t.className = 'turncounter exhausted';
+    $('chatInput').disabled = true;
+    $('send').disabled = true;
+    $('chatInput').placeholder = "We've covered the key points — go ahead and finalize.";
+    document.querySelectorAll('#chipActions .chip').forEach(c => c.disabled = true);
+  }
+}
+
+// Welcome message — shown but no chat started yet
+function showWelcome(){
+  msgWrap.innerHTML = `
+    <div class="row assistant">
+      <div class="avatar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073z"/></svg></div>
+      <div class="bubble">Hi — I can help you decide. Ask me what's most needed locally, delivery times, where the money goes, or whether to give cash, bundles, or items. <strong>Tap a topic below</strong>, or type your own question.<span class="time">${timeStr()}</span></div>
+    </div>`;
+  scroll();
+}
+
+$('send').onclick = () => sendText($('chatInput').value);
+$('chatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter'){ e.preventDefault(); sendText(e.target.value); }
+});
+document.querySelectorAll('#chipActions .chip').forEach(c => {
+  c.onclick = () => sendText(c.dataset.q);
+});
+
+// Skip / reopen
+$('skipBtn').addEventListener('click', () => {
+  document.body.classList.add('chat-collapsed');
+});
+$('reopenBtn').addEventListener('click', () => {
+  document.body.classList.remove('chat-collapsed');
+});
+
+// Mobile chat toggle
+$('mobileFab').addEventListener('click', () => {
+  $('chatPane').classList.add('mobile-open');
+});
+$('mobileClose').addEventListener('click', () => {
+  $('chatPane').classList.remove('mobile-open');
+});
+
+// Finalize
+function completeOrder(){
+  $('toast').textContent = `Order completed · Donate $${total()} · Keep $${BUDGET-total()}`;
+  $('toast').classList.add('show');
+  setTimeout(() => $('toast').classList.remove('show'), 2400);
+}
+$('finalize').addEventListener('click', completeOrder);
+$('topCheckoutBtn').addEventListener('click', completeOrder);
+
+// Arm switching
+document.querySelectorAll('.armtoggle button[data-arm]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.arm = btn.dataset.arm;
+    document.body.className = state.arm;
+    document.querySelectorAll('.armtoggle button[data-arm]').forEach(b => b.classList.toggle('active', b===btn));
+    // Reset chat collapse
+    document.body.classList.remove('chat-collapsed');
+  });
+});
+
+// Reset
+$('resetBtn').addEventListener('click', () => {
+  state.cart = {};
+  state.userTurns = 0;
+  state.thinking = false;
+  document.body.classList.remove('chat-collapsed');
+  $('chatPane').classList.remove('mobile-open');
+  shuffle(items);
+  render();
+  showWelcome();
+  document.querySelectorAll('#chipActions .chip').forEach(c => c.disabled = false);
+  $('chatInput').disabled = false;
+  $('chatInput').placeholder = "Type a question, or pick a topic above…";
+  $('send').disabled = false;
+  updateTurnCounter();
+});
+
+// Boot
+render();
+showWelcome();
+updateTurnCounter();
+</script>
+</body>
+</html>

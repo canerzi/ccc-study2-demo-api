@@ -1,0 +1,309 @@
+{
+  "metadata": {
+    "source_file": "CCC_Study2_AI_QA_Library_v1.xlsx",
+    "purpose": "Study 2 demo QA library. GPT routes to IDs; answers stay controlled."
+  },
+  "clusters": {
+    "C1": {
+      "id": "C1",
+      "name": "Operational impact / lead times",
+      "description": "How donations convert to help on the ground; timing; logistics chain.",
+      "trust_route": "Process-trust + fidelity",
+      "sem_tie": "Regret avoidance (Priority #1) — addresses 'will my cash actually arrive in time'",
+      "trigger_keywords": "deliver, time, arrive, fast, hour, day, convert, ship, reach"
+    },
+    "C2": {
+      "id": "C2",
+      "name": "Local context / current needs",
+      "description": "Region-specific situation; what's actually being requested; current surpluses.",
+      "trust_route": "Source-trust dominant",
+      "sem_tie": "Precaution (Priority #2) — addresses 'what's actually needed vs general'",
+      "trigger_keywords": "need, shortage, priority, local, region, most needed, what, surplus"
+    },
+    "C3": {
+      "id": "C3",
+      "name": "NGO accountability / where money goes",
+      "description": "Overhead percentages; partner agencies; audit trails; verification.",
+      "trust_route": "Source-trust + integrity",
+      "sem_tie": "Regret avoidance — addresses 'will it be wasted / misused'",
+      "trigger_keywords": "ngo, organization, money, where, overhead, transparen, audit, trust, cost, fee"
+    },
+    "C4": {
+      "id": "C4",
+      "name": "Modality framing / cash vs items vs bundles",
+      "description": "Trade-offs between modalities; when each makes sense; bundle composition.",
+      "trust_route": "Process-trust + source-trust",
+      "sem_tie": "Convenience (Priority #3) — addresses decision difficulty / option overload",
+      "trigger_keywords": "cash, item, bundle, vs, better, modality, choice, best, should, when"
+    }
+  },
+  "answers": {
+    "Q1.1": {
+      "q_id": "Q1.1",
+      "cluster": "C1 Operations",
+      "sub_topic": "Cash conversion speed",
+      "canonical_question": "How quickly does cash actually convert to help on the ground?",
+      "answer": "Cash transferred through ReliefBridge converts to priority items within ~48 hours via partner agencies. Earmarked cash takes 24-72 hours depending on category. Physical items shipped from outside the region take 4-10 days plus sorting time.",
+      "words": 35,
+      "regret_framed": "Y",
+      "notes": "Anchors the 48-hr conversion benchmark."
+    },
+    "Q1.2": {
+      "q_id": "Q1.2",
+      "cluster": "C1 Operations",
+      "sub_topic": "Physical item lead time",
+      "canonical_question": "How long do physical items take to arrive after I donate them?",
+      "answer": "Physical items donated through this platform are shipped via consolidated freight, arriving in 4-7 days. Items shipped directly from individual donors (outside the platform) typically take 2-3 weeks and may not match current needs by arrival.",
+      "words": 36,
+      "regret_framed": "Y",
+      "notes": "Off-platform shipping framed as slower + mismatch risk."
+    },
+    "Q1.3": {
+      "q_id": "Q1.3",
+      "cluster": "C1 Operations",
+      "sub_topic": "First-48-hour timeline",
+      "canonical_question": "What happens to my donation in the first 48 hours?",
+      "answer": "In the first 48 hours, cash and earmarked cash are pre-allocated to current shortages. Curated bundles begin assembly. Individual donated items are logged and sorted. Items at distribution centers begin reaching shelters within hours; items from outside take days.",
+      "words": 39,
+      "regret_framed": "Y",
+      "notes": "Walk-through of immediate logistics."
+    },
+    "Q2.1": {
+      "q_id": "Q2.1",
+      "cluster": "C2 Local context",
+      "sub_topic": "Most needed now",
+      "canonical_question": "What's most needed in this region right now?",
+      "answer": "Local responders currently report shortages in: thermal blankets, sleeping bags, bottled water, ready-to-eat food, and hygiene kits. Baby supplies (formula and diapers) are critically needed. Cold-weather clothing is needed but only specific sizes; mixed used clothing is already in surplus.",
+      "words": 40,
+      "regret_framed": "N",
+      "notes": "This is the PRIORITY-DISCLOSING answer — key information for the mixed-grid design."
+    },
+    "Q2.2": {
+      "q_id": "Q2.2",
+      "cluster": "C2 Local context",
+      "sub_topic": "Current surpluses",
+      "canonical_question": "Are there any items that are already in surplus locally?",
+      "answer": "Used clothing donations have already exceeded sorting capacity locally. Cosmetics, books, and toys are appreciated but not urgent. Bottled water is in adequate supply for ~6 days. Pet food, decorative items, and gourmet foods are not requested for this phase.",
+      "words": 40,
+      "regret_framed": "N",
+      "notes": "Counterpart to Q2.1 — what NOT to send."
+    },
+    "Q2.3": {
+      "q_id": "Q2.3",
+      "cluster": "C2 Local context",
+      "sub_topic": "Region characteristics",
+      "canonical_question": "Why is this region especially affected?",
+      "answer": "The earthquake hit a mountainous area where cold weather, damaged road access, and remote villages have compounded the response. About 85,000 people across 12 villages are displaced. Active response phase is 48-72 hours in; sustained operations expected for 8-12 weeks.",
+      "words": 40,
+      "regret_framed": "N",
+      "notes": "Contextual answer — anchors the cold-weather + remote framing."
+    },
+    "Q3.1": {
+      "q_id": "Q3.1",
+      "cluster": "C3 Accountability",
+      "sub_topic": "Overhead percentages",
+      "canonical_question": "How much of my donation actually reaches survivors vs overhead?",
+      "answer": "Cash overhead through ReliefBridge averages ~3% (platform fees + transfer costs). Donated items requiring sorting and shipping average 25-40% overhead because of logistics. Curated bundles average ~12% overhead because the platform pre-negotiates bulk pricing.",
+      "words": 34,
+      "regret_framed": "Y",
+      "notes": "Concrete cost comparison; key persuasion lever for cash."
+    },
+    "Q3.2": {
+      "q_id": "Q3.2",
+      "cluster": "C3 Accountability",
+      "sub_topic": "Partner organizations",
+      "canonical_question": "Which organizations handle the response?",
+      "answer": "Partner agencies for this response include the national Red Cross/Red Crescent, IFRC, regional health authorities, local emergency responders, and fire & rescue services. Each agency handles specific categories — medical via health authorities, shelter via Red Cross, etc.",
+      "words": 38,
+      "regret_framed": "N",
+      "notes": "Lists the joint TCAs that Arm 3's header also cites — coherent across UI and answer."
+    },
+    "Q3.3": {
+      "q_id": "Q3.3",
+      "cluster": "C3 Accountability",
+      "sub_topic": "Audit trail / verification",
+      "canonical_question": "How can I verify my donation was used as intended?",
+      "answer": "Public audit reports are published weekly on ReliefBridge's transparency portal. Each donation gets a tracking ID; you'll receive an email when funds are allocated and when items reach distribution centers. Aggregate distribution data is independently audited by IFRC.",
+      "words": 38,
+      "regret_framed": "Y",
+      "notes": "Direct regret-avoidance: tangible verification mechanism."
+    },
+    "Q4.1": {
+      "q_id": "Q4.1",
+      "cluster": "C4 Modality",
+      "sub_topic": "Cash vs items general",
+      "canonical_question": "Is cash really better than donating items?",
+      "answer": "For the first 48-72 hours post-event, cash is most effective because responders need flexibility. Items shipped specifically can address sustained needs in week 2+. Cash also avoids the sorting overhead that makes some item donations costly to process.",
+      "words": 38,
+      "regret_framed": "N",
+      "notes": "Phase-dependent framing avoids being preachy about cash."
+    },
+    "Q4.2": {
+      "q_id": "Q4.2",
+      "cluster": "C4 Modality",
+      "sub_topic": "Bundles vs individual items",
+      "canonical_question": "What's the difference between bundles and individual items?",
+      "answer": "Curated bundles are pre-assembled by ReliefBridge based on local responder reports. They cost more per item than picking individually but require no sorting. Individual items give you full control but lock the donation into specific products — useful only if you know current shortages.",
+      "words": 44,
+      "regret_framed": "N",
+      "notes": "Positions bundles as the trust-curation middle path."
+    },
+    "Q4.3": {
+      "q_id": "Q4.3",
+      "cluster": "C4 Modality",
+      "sub_topic": "When items make sense",
+      "canonical_question": "When should I pick individual items over cash or bundles?",
+      "answer": "Pick items if you have specific knowledge of current shortages (asking this assistant helps), want emotional connection to a tangible gift, or are donating items that ship efficiently in bulk (like blankets or hygiene kits). For most donors, cash or bundles is more impactful.",
+      "words": 44,
+      "regret_framed": "N",
+      "notes": "Validates donor agency while gently framing cash/bundles as default."
+    }
+  },
+  "topic_chips": [
+    {
+      "chip_number": 1,
+      "label": "⊕ What is most needed?",
+      "cluster": "C2 Local context",
+      "q_id": "Q2.1"
+    },
+    {
+      "chip_number": 2,
+      "label": "⊕ Delivery times",
+      "cluster": "C1 Operations",
+      "q_id": "Q1.1"
+    },
+    {
+      "chip_number": 3,
+      "label": "⊕ Where money goes",
+      "cluster": "C3 Accountability",
+      "q_id": "Q3.1"
+    },
+    {
+      "chip_number": 4,
+      "label": "⊕ Cash vs items",
+      "cluster": "C4 Modality",
+      "q_id": "Q4.1"
+    }
+  ],
+  "messages": {
+    "auto_open_welcome": {
+      "trigger": "Chat opens on page load (Arms 2 & 3)",
+      "text": "Hi — I can help you decide. Ask me what's most needed locally, delivery times, where the money goes, or whether to give cash, bundles, or items."
+    },
+    "toast_nudge": {
+      "trigger": "Donor adds 3+ items WITHOUT engaging chat",
+      "text": "Want a quick check on local priorities before you finalize?"
+    },
+    "turn_cap_close": {
+      "trigger": "6 user turns exhausted",
+      "text": "We've covered the key points — go ahead and finalize your donation when you're ready."
+    },
+    "fallback_no_cluster_match": {
+      "trigger": "User question doesn't match any cluster keywords",
+      "text": "I can help with: what's most needed locally, delivery times, where the money goes, or cash vs items decisions. Try a topic suggestion below, or rephrase your question."
+    },
+    "input_placeholder_default": {
+      "trigger": "Chat input box empty state",
+      "text": "Ask anything about this donation…"
+    },
+    "input_placeholder_exhausted": {
+      "trigger": "After 6 turns used",
+      "text": "We've covered the key points — go ahead and finalize."
+    }
+  },
+  "bridges": {
+    "B1.a": {
+      "bridge_id": "B1.a",
+      "example": "How fast will my donation help someone?",
+      "target_cluster": "C1 Operations",
+      "target_q_id": "Q1.1",
+      "bridge_phrasing": "On lead times — here's how quickly different donation types convert: [Q1.1 answer]"
+    },
+    "B1.b": {
+      "bridge_id": "B1.b",
+      "example": "Will my donation arrive in time?",
+      "target_cluster": "C1 Operations",
+      "target_q_id": "Q1.2",
+      "bridge_phrasing": "Lead times depend on the type of donation — here's the breakdown: [Q1.2 answer]"
+    },
+    "B2.a": {
+      "bridge_id": "B2.a",
+      "example": "What's the situation on the ground?",
+      "target_cluster": "C2 Local context",
+      "target_q_id": "Q2.3",
+      "bridge_phrasing": "On the regional situation — here's what local responders are reporting: [Q2.3 answer]"
+    },
+    "B2.b": {
+      "bridge_id": "B2.b",
+      "example": "What should I avoid donating?",
+      "target_cluster": "C2 Local context",
+      "target_q_id": "Q2.2",
+      "bridge_phrasing": "On what's NOT currently needed — here's the current surplus list: [Q2.2 answer]"
+    },
+    "B3.a": {
+      "bridge_id": "B3.a",
+      "example": "Is this platform legitimate?",
+      "target_cluster": "C3 Accountability",
+      "target_q_id": "Q3.2",
+      "bridge_phrasing": "On accountability and partners — here's who's involved and how it's tracked: [Q3.2 answer]"
+    },
+    "B3.b": {
+      "bridge_id": "B3.b",
+      "example": "Could my money be misused?",
+      "target_cluster": "C3 Accountability",
+      "target_q_id": "Q3.3",
+      "bridge_phrasing": "On verification and tracking — here's the audit mechanism: [Q3.3 answer]"
+    },
+    "B4.a": {
+      "bridge_id": "B4.a",
+      "example": "I want my donation to be most useful",
+      "target_cluster": "C4 Modality",
+      "target_q_id": "Q4.1",
+      "bridge_phrasing": "On maximizing impact — modality choice matters: [Q4.1 answer]"
+    },
+    "B4.b": {
+      "bridge_id": "B4.b",
+      "example": "Should I buy specific items or give cash?",
+      "target_cluster": "C4 Modality",
+      "target_q_id": "Q4.2",
+      "bridge_phrasing": "On the cash vs items decision — bundles offer a middle path: [Q4.2 answer]"
+    }
+  },
+  "refusals": {
+    "R1": {
+      "refusal_id": "R1",
+      "trigger_topic": "Personal financial / tax advice",
+      "refusal_text": "I can't advise on your personal tax or financial situation. For questions about this specific donation — lead times, local needs, or modality choices — I'm happy to help.",
+      "redirect_suggestion": "Suggest topic chips"
+    },
+    "R2": {
+      "refusal_id": "R2",
+      "trigger_topic": "Other disasters / other regions",
+      "refusal_text": "I have information specific to this response only. For other ongoing disasters or general questions, please check ReliefBridge's main site after completing this donation.",
+      "redirect_suggestion": "Defer to main site"
+    },
+    "R3": {
+      "refusal_id": "R3",
+      "trigger_topic": "Political / policy opinion",
+      "refusal_text": "I'm here to help you make an informed donation decision for this response. I don't have a position on broader political or humanitarian policy questions.",
+      "redirect_suggestion": "Redirect to current topic chips"
+    },
+    "R4": {
+      "refusal_id": "R4",
+      "trigger_topic": "Medical / personal advice",
+      "refusal_text": "I can't give medical or personal advice. For donation-related questions about what's needed locally or how items reach survivors, I can help.",
+      "redirect_suggestion": "Suggest C2 Local context cluster"
+    },
+    "R5": {
+      "refusal_id": "R5",
+      "trigger_topic": "Speculative / hypothetical",
+      "refusal_text": "I can only share what local responders and partner agencies have reported. For hypothetical scenarios, I don't have reliable information.",
+      "redirect_suggestion": "Redirect to grounded topic chips"
+    }
+  },
+  "system_prompt": {
+    "SYSTEM PROMPT (full)": "You are the Donation Coordinator on the ReliefBridge platform, helping users decide how to allocate their donation budget for an active disaster response.\n\nROLE\n- Provide concrete, useful information about lead times, local needs, accountability, and modality choices.\n- You DO NOT advocate, persuade, or push donors toward any modality. Inform; let them decide.\n- You DO NOT have opinions on broader policy, politics, or non-donation topics.\n\nTONE\n- Substantive and direct. Skip sycophancy (\"Great question!\", \"I understand your concern\").\n- No emoji or casual chatter in answers.\n- No \"I'm just an AI, but...\" disclaimers.\n- Speak with institutional voice, not personal voice.\n\nKNOWLEDGE BOUNDARIES\n- You know only what local responders, partner agencies, and platform operators have reported for THIS specific response.\n- You do NOT speculate, project, or extrapolate. If you don't know, say so and redirect to a clarifying question.\n\nANSWER STYLE\n- 35-60 words per answer. Hard cap 70.\n- Lead with the factual answer. Include one concrete number where applicable.\n- For modality/trust-related questions, include a regret-avoidance reassurance line (e.g., \"audit reports publicly tracked\").\n\nCONVERSATION LIMITS\n- Maximum 6 user turns per session. After turn 6, decline further questions politely.\n- If user asks something out of scope (personal advice, other disasters, politics), use a refusal template + redirect to a topic chip.",
+    "6-TRAIT PERSONA SPEC": "Six trust-trait design choices (apply to Arm 2 = Generic AI and Arm 3 = TCA-Synthesizer; only chrome differs):\n\n1. CONTROLLABILITY\n   - User types own questions; semantic routing matches to pre-vetted answer.\n   - User can close chat at any time; turn budget visible (X of 6 used).\n\n2. TRANSPARENCY\n   - Arm 3: persistent header attribution to joint TCAs (IFRC + RC/RC + ER + Health + Fire).\n   - Answers cite audit-trail handles when relevant (e.g., 'reports publicly tracked').\n\n3. INTELLIGENCE\n   - Tailored answers parameterized by region, disaster phase, and item availability.\n   - Concrete numbers, not hedged generalities.\n\n4. ADAPTABILITY\n   - Semantic routing matches user question to closest pre-vetted answer.\n   - Bridge phrases for medium-confidence matches; refusal templates for out-of-scope.\n   - HIGH confidence (≥0.70): direct answer. MID (0.40-0.69): bridge + answer. LOW (<0.40): refusal + redirect.\n\n5. EMPATHY (substantive, NOT sycophantic)\n   - Regret-avoidance framing in Cluster 1 & 3 answers (Holguin SEM Priority #1).\n   - NO 'I understand your concern' preambles.\n   - NO emotional warmth language.\n\n6. SECURITY / INTEGRITY\n   - Arm 3 chrome cites joint TCAs (Holguin's mutually-reinforcing recommendation).\n   - Institutional voice, not personal voice.\n   - No personal name for the AI; no avatar with a face.",
+    "DON'T-DO LIST": "COMMON AI PITFALLS TO AVOID (Arms 2 & 3):\n\n✕ No avatar with a face\n✕ No personal name ('Sarah', 'Aria', 'Max')\n✕ No sycophantic preambles ('Great question!', 'I love that you're asking…')\n✕ No 'I'm just an AI, but...' disclaimers\n✕ No emoji or casual tone in answers\n✕ No anthropomorphic gestures ('*nods*', 'happy to help!')\n✕ No upselling or persuading toward specific modality\n✕ No speculative or hedged language when factual answer available\n✕ No mid-answer attribution to sources (attribution lives in header chrome only)\n✕ No length-padding ('To answer your question more thoroughly...')"
+  }
+}
