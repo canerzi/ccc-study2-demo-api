@@ -12,3 +12,10 @@ data/qa_library_backup_before_v4.json
 # Logs
 data/*log*
 *.log
+
+# Local source Excel and notes
+data/*.xlsx
+UPDATE_LIBRARY_STEPS.txt
+
+# Old generated v3 library
+data/qa_library.json
