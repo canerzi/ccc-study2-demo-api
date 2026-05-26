@@ -650,22 +650,30 @@ async function routeQuestion(question){
   const payload = {
     question,
     arm: state.arm,
+    condition: state.arm,
     cart: state.cart,
-    turnNumber: state.userTurns
+    turnNumber: state.userTurns,
+    participant_id: 'demo-participant'
   };
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 14000);
+
   try {
-    const res = await fetch('/api/chat', {
+    const res = await fetch('/api/v4/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (!res.ok) throw new Error('API returned ' + res.status);
     const data = await res.json();
-    console.log('Spreadsheet/GPT mapping:', data);
+    console.log('V4 QA routing:', data);
     return data.answer || ANSWERS.fallback;
   } catch (err) {
-    console.warn('API unavailable; falling back to local keyword answer.', err);
+    clearTimeout(timeoutId);
+    console.warn('API unavailable or timed out; falling back to local keyword answer.', err);
     return ANSWERS[classify(question)] || ANSWERS.fallback;
   }
 }
@@ -678,7 +686,14 @@ async function aiStreamFromApi(question){
   const row = aiThinking();
   const startedAt = Date.now();
 
-  const answer = await routeQuestion(question);
+  let answer;
+  try {
+    answer = await routeQuestion(question);
+  } catch (err) {
+    console.warn('Unexpected chat failure; using local fallback.', err);
+    answer = ANSWERS[classify(question)] || ANSWERS.fallback;
+  }
+  answer = String(answer || ANSWERS.fallback);
 
   const minThinkingMs = 1200;
   const wait = Math.max(0, minThinkingMs - (Date.now() - startedAt));

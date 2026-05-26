@@ -1,4 +1,14 @@
-.env
 node_modules/
+.env
+.env.local
 .DS_Store
-npm-debug.log
+
+# Backups and temporary files
+server_backup_before_v4.js
+data/*backup*
+data/qa_library_v3_backup.json
+data/qa_library_backup_before_v4.json
+
+# Logs
+data/*log*
+*.log

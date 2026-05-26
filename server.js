@@ -1,3 +1,6 @@
+import qaV4Engine from "./lib/qa-v4-engine.cjs";
+const { routeQuestionV4, getV4ClientConfig } = qaV4Engine;
+
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
@@ -27,6 +30,15 @@ const refusalIds = Object.keys(qa.refusals);
 
 function normalize(s) {
   return String(s || "").toLowerCase();
+}
+
+
+function withTimeout(promise, ms, label = "operation") {
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = setTimeout(() => reject(new Error(`${label}_timeout_after_${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timeoutId));
 }
 
 function deterministicFallback(question) {
@@ -173,7 +185,8 @@ app.post("/api/chat", async (req, res) => {
     mapping = deterministicFallback(question);
   } else {
     try {
-      const response = await openai.responses.create({
+      console.log(`[api/chat] routing question: ${question}`);
+      const response = await withTimeout(openai.responses.create({
         model: MODEL,
         input: [
           { role: "system", content: routerPrompt() },
@@ -189,9 +202,10 @@ app.post("/api/chat", async (req, res) => {
         },
         temperature: 0,
         max_output_tokens: 160
-      });
+      }), 12000, "openai_routing");
 
       mapping = JSON.parse(response.output_text);
+      console.log("[api/chat] mapping:", mapping);
     } catch (err) {
       console.error("OpenAI routing failed, falling back:", err);
       mapping = deterministicFallback(question);
@@ -199,6 +213,7 @@ app.post("/api/chat", async (req, res) => {
   }
 
   const composed = composeAnswer(mapping);
+  console.log("[api/chat] returning", { type: mapping?.type, q_id: composed.q_id, bridge_id: composed.bridge_id, refusal_id: composed.refusal_id });
 
   res.json({
     ...mapping,
@@ -216,6 +231,55 @@ app.get("/api/health", (_, res) => {
     bridges: bridgeIds.length,
     refusals: refusalIds.length
   });
+});
+
+app.get("/api/v4/config", (req, res) => {
+  try {
+    const config = getV4ClientConfig();
+    res.json({
+      ok: true,
+      ...config
+    });
+  } catch (error) {
+    console.error("v4 config error:", error);
+    res.status(500).json({
+      ok: false,
+      error: "Failed to load v4 config."
+    });
+  }
+});
+
+app.post("/api/v4/ask", (req, res) => {
+  try {
+    const userQuestion = req.body.question || req.body.user_question || "";
+    const participantId = req.body.participant_id || null;
+    const condition = req.body.condition || null;
+
+    const result = routeQuestionV4(userQuestion);
+
+    /*
+      For now, log to terminal.
+      Later we can write this to a database or CSV.
+    */
+    console.log("V4 interaction:", {
+      participantId,
+      condition,
+      question: userQuestion,
+      answer_id: result.answer_id,
+      domain: result.domain,
+      wrapper_type: result.wrapper_type,
+      score: result.score,
+      type: result.type
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error("v4 ask error:", error);
+    res.status(500).json({
+      ok: false,
+      error: "Assistant failed to answer. Please try again."
+    });
+  }
 });
 
 app.listen(PORT, () => {
